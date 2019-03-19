@@ -1,17 +1,23 @@
 type token =
-  | SEMI
   | LPAREN
   | RPAREN
+  | LBRACK
+  | RBRACK
   | LBRACE
   | RBRACE
+  | SEMI
   | COMMA
+  | DOT
   | PLUS
   | MINUS
   | TIMES
   | DIVIDE
-  | MOD
+  | MODULO
+  | POWER
+  | SELFPLUS
+  | SELFMINUS
+  | MATMUL
   | ASSIGN
-  | NOT
   | EQ
   | NEQ
   | LT
@@ -20,19 +26,28 @@ type token =
   | GEQ
   | AND
   | OR
-  | RETURN
+  | NOT
   | IF
   | ELSE
   | FOR
   | WHILE
+  | BREAK
+  | CONTINUE
+  | RETURN
   | INT
   | BOOL
   | FLOAT
+  | CHAR
+  | STRING
+  | MAT
+  | IMG
   | VOID
+  | STRUCT
   | LITERAL of (int)
   | BLIT of (bool)
   | ID of (string)
   | FLIT of (string)
+  | STRING_LITERAL of (string)
   | EOF
 
 val program :

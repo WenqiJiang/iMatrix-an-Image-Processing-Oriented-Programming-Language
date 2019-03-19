@@ -11,18 +11,23 @@ rule token = parse
 | "//"     { inlinecom lexbuf }
 | '('      { LPAREN }                   (* () [] {} *)
 | ')'      { RPAREN }
-| '['      { LBRACK }
-| ']'      { RBRACK }
+(* | '['      { LBRACK } *)
+(* | ']'      { RBRACK } *)
 | '{'      { LBRACE }
 | '}'      { RBRACE }
 | ';'      { SEMI }                     (* split *)
 | ','      { COMMA }
+| '.'      { DOT }
 | '+'      { PLUS }                     (* arithmatic *)
 | '-'      { MINUS }
 | '*'      { TIMES }
 | '/'      { DIVIDE }
-| '%'      { MOD }
-| '='      { ASSIGN }
+| '%'      { MODULO }
+| '^'      { POWER }
+(* | "++"     { SELFPLUS } *)
+(* | "--"     { SELFMINUS } *)
+(* | "*."     { MATMUL } *)
+| '='      { ASSIGN }                   (* assign *)
 | "=="     { EQ }                       (* logical *)
 | "!="     { NEQ }
 | '<'      { LT }
@@ -44,7 +49,7 @@ rule token = parse
 | "float"  { FLOAT }
 | "char"   { CHAR }
 | "string" { STRING }
-| "matrix" { MATRIX }
+| "mat"    { MAT }
 | "img"    { IMG }
 | "void"   { VOID }
 | "struct" { STRUCT }
@@ -53,9 +58,14 @@ rule token = parse
 | digits as lxm { LITERAL(int_of_string lxm) }  (* int *)
 | digits '.'  digit* ( ['e' 'E'] ['+' '-']? digits )? as lxm { FLIT(lxm) }  (* float *)
 | ['a'-'z' 'A'-'Z']['a'-'z' 'A'-'Z' '0'-'9' '_']*     as lxm { ID(lxm) }    (* ID *)
+| '"' ([^ '"']* as str) '"'         { STRING_LITERAL(str) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 
 and comment = parse
   "*/" { token lexbuf }
 | _    { comment lexbuf }
+
+and inlinecom = parse
+        ['\r' '\n']           { token lexbuf }
+      | _                     { inlinecom lexbuf}
